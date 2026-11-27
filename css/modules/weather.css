@@ -1,4 +1,4 @@
-/* weather.css - 精简版 */
+/* weather.css - 完整修改版（iPad优化） */
 .weather-modal-card {
     position: fixed;
     top: 0;
@@ -47,6 +47,7 @@
     overflow-y: auto;
     flex: 1;
     padding: 0 0 8px 0;
+    -webkit-overflow-scrolling: touch;
 }
 .weather-body::-webkit-scrollbar { width: 4px; }
 .weather-body::-webkit-scrollbar-track { background: rgba(0,0,0,.05); }
@@ -109,11 +110,15 @@
     align-items: center;
     justify-content: center;
     font-size: 11px;
+    -webkit-tap-highlight-color: transparent;
 }
-.weather-icon-btn:hover {
-    background: var(--bg-secondary, #f0f0f0);
-    color: var(--primary-color, #4361ee);
+@media (hover: hover) {
+    .weather-icon-btn:hover {
+        background: var(--bg-secondary, #f0f0f0);
+        color: var(--primary-color, #4361ee);
+    }
 }
+.weather-icon-btn:active { transform: scale(0.9); }
 
 .loading-state { padding: 30px 20px; text-align: center; }
 .loading-spinner {
@@ -141,7 +146,9 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background-color .2s ease;
+    -webkit-tap-highlight-color: transparent;
 }
+.weather-action-btn:active { transform: scale(0.95); }
 
 .weather-alarms {
     padding: 6px 10px;
@@ -477,7 +484,7 @@
     padding: 8px 10px;
     border: 1px solid var(--border-color, #e0e0e0);
     border-radius: 6px;
-    font-size: 12px;
+    font-size: 16px; /* iOS 防缩放 */
     background: var(--bg-card, #ffffff);
     color: var(--text-primary, #333);
     box-sizing: border-box;
@@ -495,12 +502,17 @@
     color: var(--text-secondary, #666);
     cursor: pointer;
     transition: all .2s ease;
+    -webkit-tap-highlight-color: transparent;
 }
-.hot-city-btn:hover {
-    background: var(--border-color, #e9ecef);
-    border-color: var(--primary-color, #4361ee);
-    color: var(--primary-color, #4361ee);
+@media (hover: hover) {
+    .hot-city-btn:hover {
+        background: var(--border-color, #e9ecef);
+        border-color: var(--primary-color, #4361ee);
+        color: var(--primary-color, #4361ee);
+    }
 }
+.hot-city-btn:active { transform: scale(0.95); }
+
 .prompt-actions {
     display: flex;
     gap: 8px;
@@ -665,3 +677,24 @@
 .dark-mode .error-sub-text { color: var(--text-secondary); }
 .dark-mode .error-icon { color: #f87171; }
 .dark-mode .weather-alarms { background: #2d1f0e; border-left-color: #f39c12; }
+
+/* =========================================================
+   iPad 专门优化 (新增部分)
+   ========================================================= */
+@media (min-width: 768px) and (max-width: 1180px) {
+    .weather-modal-content {
+        max-width: 480px; /* 平板上让天气卡片更舒展 */
+    }
+    .weather-icon-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 15px;
+    }
+    .hot-city-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    .prompt-input-group input {
+        padding: 12px;
+    }
+}
