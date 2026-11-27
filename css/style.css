@@ -1,4 +1,4 @@
-/* style.css - 精简版（含主题切换过渡、移除重复变量、响应式统一、iPad 触控优化） */
+/* style.css - 精简版（含主题切换过渡、移除重复变量、响应式统一） */
 
 /* ===== 基础变量（仅在 style.css 中定义，避免与内联重复） ===== */
 :root {
@@ -1212,44 +1212,3 @@ img:not(.lazy-icon):not(.js-img-fallback) { max-width: 100%; height: auto; }
 .dark-mode .running-icon { border-color: var(--error-color); }
 .dark-mode .stat-name { color: var(--text-secondary); }
 .dark-mode .stat-number { color: var(--text-primary); }
-
-/* =========================================================
-   iPad 触控 & iOS 视口优化 (新增部分)
-   ========================================================= */
-
-/* 1. 解决 iPad 触控“悬停黏滞”问题 */
-@media (hover: hover) and (pointer: fine) {
-    /* 保留原有桌面端的 hover 效果 */
-    .site-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-    }
-    .minimal-tag:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,.1);
-    }
-    .nav-btn:hover, .floating-btn:hover, .fish-btn:hover {
-        transform: translateY(-2px);
-    }
-}
-
-@media (hover: none) {
-    /* 触屏设备使用 active 进行主动反馈 */
-    .site-card:active, .minimal-tag:active, .fish-btn:active, .nav-btn:active, .floating-btn:active {
-        transform: scale(0.96);
-        opacity: 0.8;
-        transition: transform 0.1s;
-    }
-}
-
-/* 2. 解决 iOS Safari 输入框字体自动放大 */
-@media (max-width: 1180px) {
-    input[type="text"],
-    input[type="url"],
-    input[type="email"],
-    input[type="number"],
-    textarea,
-    .search-input {
-        font-size: 16px !important;
-    }
-}
