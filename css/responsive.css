@@ -1,4 +1,4 @@
-/* responsive.css - 精简版（合并重复媒体查询） */
+/* responsive.css - 精简版（合并重复媒体查询 + iPad 专门优化） */
 @media (min-width: 1600px) {
     .container, .nav-container, .greeting-container, .footer-compact-container { max-width: 1400px; }
     .tags-grid { grid-template-columns: repeat(10, 1fr); gap: 12px; }
@@ -242,79 +242,33 @@
 
 /* ============================================================
    ⭐ 星聚笔记 / 访问排行榜 模态框：适配移动端浏览器底部工具栏
-   ------------------------------------------------------------
-   1. 使用动态视口高度 100dvh，随工具栏显示/隐藏自动调整；
-   2. 通过 env(safe-area-inset-bottom) 预留 iPhone 安全区；
-   3. 通过 --browser-bottom-inset 变量（由 keyboard-adapter.js
-      用 visualViewport API 实时计算）精确扣除底部工具栏高度，
-      覆盖 Android Chrome / 微信 / iOS Safari 等场景。
-   注：本段仅作用于 #notebookModal 与 #rankModal，其他模块样式保持不变。
    ============================================================ */
 
 /* ---------- 星聚笔记 ---------- */
 #notebookModal {
-    /* 高度改用动态视口；不支持 dvh 的浏览器回退到 100vh */
     height: 100vh;
     height: 100dvh;
     max-height: 100vh;
     max-height: 100dvh;
-    /* 取消 inset:0 里隐含的 bottom:0，避免与固定高度冲突 */
     bottom: auto;
 }
 
 #notebookModal .feedback-modal-content {
-    /* 桌面端兜底：视口高度 - 顶部 60 - 底部留白 - 安全区 - 工具栏 */
-    max-height: calc(
-        100vh
-        - 60px
-        - 2 * var(--container-padding-xs, 16px)
-        - env(safe-area-inset-bottom, 0px)
-        - var(--browser-bottom-inset, 0px)
-    );
-    max-height: calc(
-        100dvh
-        - 60px
-        - 2 * var(--container-padding-xs, 16px)
-        - env(safe-area-inset-bottom, 0px)
-        - var(--browser-bottom-inset, 0px)
-    );
+    max-height: calc(100vh - 60px - 2 * var(--container-padding-xs, 16px) - env(safe-area-inset-bottom, 0px) - var(--browser-bottom-inset, 0px));
+    max-height: calc(100dvh - 60px - 2 * var(--container-padding-xs, 16px) - env(safe-area-inset-bottom, 0px) - var(--browser-bottom-inset, 0px));
 }
 
 @media (max-width: 768px) {
     #notebookModal .feedback-modal-content {
-        max-height: calc(
-            100vh
-            - 60px
-            - 2 * var(--container-padding-xs, 16px)
-            - env(safe-area-inset-bottom, 0px)
-            - var(--browser-bottom-inset, 0px)
-        ) !important;
-        max-height: calc(
-            100dvh
-            - 60px
-            - 2 * var(--container-padding-xs, 16px)
-            - env(safe-area-inset-bottom, 0px)
-            - var(--browser-bottom-inset, 0px)
-        ) !important;
+        max-height: calc(100vh - 60px - 2 * var(--container-padding-xs, 16px) - env(safe-area-inset-bottom, 0px) - var(--browser-bottom-inset, 0px)) !important;
+        max-height: calc(100dvh - 60px - 2 * var(--container-padding-xs, 16px) - env(safe-area-inset-bottom, 0px) - var(--browser-bottom-inset, 0px)) !important;
     }
 }
 
 @media (max-width: 480px) {
     #notebookModal .feedback-modal-content {
-        max-height: calc(
-            100vh
-            - 56px
-            - 2 * var(--container-padding-xs, 16px)
-            - env(safe-area-inset-bottom, 0px)
-            - var(--browser-bottom-inset, 0px)
-        ) !important;
-        max-height: calc(
-            100dvh
-            - 56px
-            - 2 * var(--container-padding-xs, 16px)
-            - env(safe-area-inset-bottom, 0px)
-            - var(--browser-bottom-inset, 0px)
-        ) !important;
+        max-height: calc(100vh - 56px - 2 * var(--container-padding-xs, 16px) - env(safe-area-inset-bottom, 0px) - var(--browser-bottom-inset, 0px)) !important;
+        max-height: calc(100dvh - 56px - 2 * var(--container-padding-xs, 16px) - env(safe-area-inset-bottom, 0px) - var(--browser-bottom-inset, 0px)) !important;
     }
 }
 
@@ -328,56 +282,116 @@
 }
 
 #rankModal .feedback-modal-content {
-    max-height: calc(
-        100vh
-        - 60px
-        - 2 * var(--container-padding-xs, 16px)
-        - env(safe-area-inset-bottom, 0px)
-        - var(--browser-bottom-inset, 0px)
-    );
-    max-height: calc(
-        100dvh
-        - 60px
-        - 2 * var(--container-padding-xs, 16px)
-        - env(safe-area-inset-bottom, 0px)
-        - var(--browser-bottom-inset, 0px)
-    );
+    max-height: calc(100vh - 60px - 2 * var(--container-padding-xs, 16px) - env(safe-area-inset-bottom, 0px) - var(--browser-bottom-inset, 0px));
+    max-height: calc(100dvh - 60px - 2 * var(--container-padding-xs, 16px) - env(safe-area-inset-bottom, 0px) - var(--browser-bottom-inset, 0px));
 }
 
 @media (max-width: 768px) {
     #rankModal .feedback-modal-content {
-        max-height: calc(
-            100vh
-            - 60px
-            - 2 * var(--container-padding-xs, 16px)
-            - env(safe-area-inset-bottom, 0px)
-            - var(--browser-bottom-inset, 0px)
-        ) !important;
-        max-height: calc(
-            100dvh
-            - 60px
-            - 2 * var(--container-padding-xs, 16px)
-            - env(safe-area-inset-bottom, 0px)
-            - var(--browser-bottom-inset, 0px)
-        ) !important;
+        max-height: calc(100vh - 60px - 2 * var(--container-padding-xs, 16px) - env(safe-area-inset-bottom, 0px) - var(--browser-bottom-inset, 0px)) !important;
+        max-height: calc(100dvh - 60px - 2 * var(--container-padding-xs, 16px) - env(safe-area-inset-bottom, 0px) - var(--browser-bottom-inset, 0px)) !important;
     }
 }
 
 @media (max-width: 480px) {
     #rankModal .feedback-modal-content {
-        max-height: calc(
-            100vh
-            - 56px
-            - 2 * var(--container-padding-xs, 16px)
-            - env(safe-area-inset-bottom, 0px)
-            - var(--browser-bottom-inset, 0px)
-        ) !important;
-        max-height: calc(
-            100dvh
-            - 56px
-            - 2 * var(--container-padding-xs, 16px)
-            - env(safe-area-inset-bottom, 0px)
-            - var(--browser-bottom-inset, 0px)
-        ) !important;
+        max-height: calc(100vh - 56px - 2 * var(--container-padding-xs, 16px) - env(safe-area-inset-bottom, 0px) - var(--browser-bottom-inset, 0px)) !important;
+        max-height: calc(100dvh - 56px - 2 * var(--container-padding-xs, 16px) - env(safe-area-inset-bottom, 0px) - var(--browser-bottom-inset, 0px)) !important;
+    }
+}
+
+/* =========================================================
+   iPad 专门优化 (新增部分)
+   ========================================================= */
+
+/* 1. 统一使用动态视口高度，兼容 iPad 横竖屏 */
+:root {
+    --app-height: 100dvh; 
+}
+
+@supports not (height: 100dvh) {
+    :root { --app-height: 100vh; }
+}
+
+/* 修复弹窗在 iPad 上的最大高度 */
+.feedback-modal-content,
+.weather-modal-content,
+.announcement-modal-container {
+    max-height: calc(var(--app-height) - 80px) !important;
+}
+
+/* 修复 iPad 底部安全区 */
+.footer-compact-container {
+    padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px));
+}
+
+/* 2. 优化 iPad 导航区布局（768px - 1180px） */
+@media (min-width: 768px) and (max-width: 1180px) {
+    /* 让导航区域利用宽屏优势，恢复左右结构 */
+    .navigation-body {
+        flex-direction: row !important;
+    }
+    .navigation-left {
+        width: 120px !important;
+        border-right: 1px solid var(--border-color) !important;
+        border-bottom: none !important;
+    }
+    .navigation-middle {
+        width: 140px !important;
+        border-right: 1px solid var(--border-color) !important;
+        border-bottom: none !important;
+    }
+    .level1-nav, .level2-nav {
+        flex-direction: column !important; /* 一级二级纵向排列 */
+        overflow-x: hidden;
+        padding: 8px 0 !important;
+    }
+    .level1-btn, .level2-btn {
+        width: 100%;
+        justify-content: flex-start !important;
+        padding: 0 16px !important;
+        border-right: none !important;
+        border-bottom: 1px solid var(--border-color) !important;
+    }
+    
+    /* 优化卡片网格密度 */
+    .level3-content {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
+        gap: 12px !important;
+    }
+
+    /* 优化标签间距 */
+    .tags-grid {
+        grid-template-columns: repeat(6, 1fr) !important;
+    }
+}
+
+/* 3. 放大 iPad 上的触控目标（Apple 规范 ≥ 44px） */
+@media (min-width: 768px) and (max-width: 1180px) {
+    /* 顶部导航按钮放大 */
+    .nav-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 18px;
+    }
+    
+    /* 侧边栏底部按钮放大 */
+    .footer-btn {
+        min-height: 44px;
+    }
+
+    /* 关闭按钮放大 */
+    .feedback-modal-close,
+    .announcement-close {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+    
+    /* 搜索框高度放大 */
+    .search-modal .search-input,
+    .search-modal .search-submit-btn {
+        height: 44px;
+        font-size: 16px; /* 防 iOS 自动放大 */
     }
 }
