@@ -1,4 +1,4 @@
-/* comment.css - 评论模态框样式 */
+/* comment.css - 完整修改版（iPad优化） */
 
 .twikoo-fallback {
     padding: 20px;
@@ -77,4 +77,13 @@
 }
 .dark-mode #commentModal .feedback-modal-content::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, .2);
+}
+
+/* =========================================================
+   iPad 专门优化 (新增部分)
+   ========================================================= */
+@media (min-width: 768px) and (max-width: 1180px) {
+    #commentModal .feedback-modal-content {
+        max-width: 700px; /* 平板上评论框宽一点更好看 */
+    }
 }
