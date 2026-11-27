@@ -1,4 +1,4 @@
-/* compact-tags.css - 完整修改版（统一使用 padding-bottom: 10px） */
+/* compact-tags.css - 完整修改版（统一使用 padding-bottom: 10px + iPad优化） */
 .minimal-tags-section {
     padding: 0 0 10px 0;
     width: 100%;
@@ -93,6 +93,7 @@
     opacity: 1;
     visibility: visible;
     animation: tagFadeIn .3s ease forwards;
+    -webkit-tap-highlight-color: transparent;
 }
 .minimal-tag .tag-icon {
     display: flex;
@@ -115,14 +116,27 @@
     transition: all .2s ease;
     z-index: 1;
 }
-.minimal-tag:hover::before { width: 4px; height: 22px; }
-.minimal-tag.active::before { width: 4px; height: 26px; }
-.minimal-tag:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,.1);
-    border-color: var(--tag-color, #4361ee);
-    background: var(--bg-card, #ffffff);
+
+@media (hover: hover) {
+    .minimal-tag:hover::before { width: 4px; height: 22px; }
+    .minimal-tag:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,.1);
+        border-color: var(--tag-color, #4361ee);
+        background: var(--bg-card, #ffffff);
+    }
+    .minimal-tag:hover .tag-icon {
+        transform: scale(1.1);
+        color: var(--tag-color, #4361ee);
+    }
 }
+
+.minimal-tag:active {
+    transform: scale(0.95);
+    opacity: 0.8;
+}
+
+.minimal-tag.active::before { width: 4px; height: 26px; }
 .minimal-tag.active {
     border: 2px solid var(--tag-color, #4361ee);
     background: var(--bg-card, #ffffff);
@@ -141,7 +155,7 @@
     flex-shrink: 0;
     transition: all .2s ease;
 }
-.minimal-tag:hover .tag-icon,
+
 .minimal-tag.active .tag-icon {
     transform: scale(1.1);
     color: var(--tag-color, #4361ee);
@@ -156,7 +170,6 @@
     text-overflow: ellipsis;
     transition: none;
 }
-.minimal-tag:hover .tag-label,
 .minimal-tag.active .tag-label {
     color: var(--text-primary, #2b2d42);
     font-weight: 500;
@@ -301,3 +314,19 @@
 .dark-mode .tag-label { color: var(--text-primary); }
 .dark-mode .minimal-tag:hover .tag-label,
 .dark-mode .minimal-tag.active .tag-label { color: var(--text-primary); }
+
+/* =========================================================
+   iPad 专门优化 (新增部分)
+   ========================================================= */
+@media (min-width: 768px) and (max-width: 1180px) {
+    /* 在 iPad 上将标签列数固定在 5 列，避免横向过于拥挤 */
+    .tags-grid {
+        grid-template-columns: repeat(5, 1fr) !important;
+        gap: 10px;
+    }
+    
+    .minimal-tag {
+        padding: 10px 14px;
+        min-height: 44px; /* 满足 44px 触控标准 */
+    }
+}
