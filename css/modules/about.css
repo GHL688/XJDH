@@ -1,4 +1,4 @@
-/* about.css - 完整修改版（iPad优化） */
+/* about.css - 精简版 */
 .about-modal {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     position: fixed;
@@ -55,7 +55,7 @@
 .about-header-bg {
     position: absolute;
     inset: 0;
-    background-image: url('../../assets/images/wallpaper-about.jpg');
+    background-image: url('../assets/images/wallpaper-about.jpg');
     background-size: cover;
     background-position: center;
     z-index: 1;
@@ -170,14 +170,10 @@
     box-shadow: 0 2px 4px rgba(0,0,0,.05);
     transition: all .2s ease;
 }
-@media (hover: hover) {
-    .about-card.white-bg:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 6px rgba(0,0,0,.07);
-    }
+.about-card.white-bg:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0,0,0,.07);
 }
-.about-card.white-bg:active { transform: scale(0.98); }
-
 .card-icon {
     width: 24px;
     height: 24px;
@@ -235,24 +231,17 @@
     box-shadow: 0 2px 4px rgba(0,0,0,.05);
     font-size: 14px;
     color: #fff;
-    -webkit-tap-highlight-color: transparent;
 }
-@media (hover: hover) {
-    .about-social-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 6px rgba(0,0,0,.07);
-    }
+.about-social-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,.07);
 }
-.about-social-btn:active { transform: scale(0.9); }
-
 .qq-btn { background: #6BC5FF; }
 .qq-btn:hover { background: #5AB5EF; }
 .donate-btn { background: #ef4444; }
 .donate-btn:hover { background: #FF6B6B; }
 .space-btn { background: #f59e0b; }
 .space-btn:hover { background: #FFC952; }
-.github-btn { background: #24292e; }
-.github-btn:hover { background: #1a1e24; }
 
 .about-social-btn .tooltip-text {
     visibility: hidden;
@@ -281,13 +270,10 @@
     border-style: solid;
     border-color: var(--text-primary, #2b2d42) transparent transparent transparent;
 }
-@media (hover: hover) {
-    .about-social-btn:hover .tooltip-text {
-        visibility: visible;
-        opacity: 1;
-    }
+.about-social-btn:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
 }
-
 .about-close-btn {
     padding: 8px 14px;
     border: none;
@@ -304,16 +290,12 @@
     gap: 4px;
     min-width: 70px;
     box-shadow: 0 2px 4px rgba(0,0,0,.05);
-    -webkit-tap-highlight-color: transparent;
 }
-@media (hover: hover) {
-    .about-close-btn:hover {
-        background: #6EC312;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 6px rgba(0,0,0,.07);
-    }
+.about-close-btn:hover {
+    background: #6EC312;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0,0,0,.07);
 }
-.about-close-btn:active { transform: scale(0.95); }
 
 /* 平板适配 */
 @media (min-width:768px) {
@@ -379,27 +361,10 @@
 .dark-mode .donate-btn:hover { background: #dc2626; }
 .dark-mode .space-btn { background: #f59e0b; }
 .dark-mode .space-btn:hover { background: #d97706; }
-.dark-mode .github-btn { background: #24292e; }
-.dark-mode .github-btn:hover { background: #1a1e24; }
 .dark-mode .about-social-btn .tooltip-text {
     background-color: #e0e0e0;
     color: #1e1e1e;
 }
 .dark-mode .about-social-btn .tooltip-text::after {
     border-color: #e0e0e0 transparent transparent transparent;
-}
-
-/* =========================================================
-   iPad 专门优化 (新增部分)
-   ========================================================= */
-@media (min-width: 768px) and (max-width: 1180px) {
-    /* 在 iPad 上放大社交按钮，方便点击 */
-    .about-social-btn {
-        width: 44px;
-        height: 44px;
-        font-size: 20px;
-    }
-    .about-social-buttons {
-        gap: 14px;
-    }
 }
