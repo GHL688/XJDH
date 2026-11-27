@@ -1,4 +1,4 @@
-/* sidebar.css - 完整修改版（修复 bottom 拉伸 + 适配 iPad） */
+/* sidebar.css - 精简版 */
 :root {
     --sidebar-width: 260px;
     --sidebar-mobile-width: 70vw;
@@ -11,11 +11,8 @@
 .sidebar {
     position: fixed;
     left: var(--container-padding-xs, 16px);
-    /* ===== 修复：移除 bottom: 20px，避免 flex 布局被强制拉伸 ===== */
-    /* bottom: 20px; */
-    top: 60px; /* 默认值，JS会动态覆盖 */
+    bottom: 20px;
     width: var(--sidebar-width);
-    max-height: calc(100vh - 80px); /* 限制最大高度 */
     background: var(--sidebar-bg);
     border-radius: 8px;
     border: 1px solid var(--border-color, #e0e0e0);
@@ -69,14 +66,8 @@
     flex-shrink: 0;
     cursor: pointer;
     transition: transform 0.2s ease;
-    -webkit-tap-highlight-color: transparent;
 }
-
-@media (hover: hover) {
-    .sidebar-wallpaper-avatar:hover { transform: scale(1.05); }
-}
-.sidebar-wallpaper-avatar:active { transform: scale(0.95); }
-
+.sidebar-wallpaper-avatar:hover { transform: scale(1.02); }
 .sidebar-wallpaper-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .sidebar-wallpaper-user-text { flex: 1; min-width: 0; }
 .sidebar-wallpaper-nickname {
@@ -116,7 +107,6 @@
     padding: 0 12px 8px;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    -webkit-overflow-scrolling: touch; /* iOS 顺滑滚动 */
 }
 .sidebar-categories::-webkit-scrollbar { display: none; }
 
@@ -137,14 +127,8 @@
     cursor: pointer;
     user-select: none;
     transition: background 0.2s;
-    -webkit-tap-highlight-color: transparent;
 }
-
-@media (hover: hover) {
-    .category-group-header:hover { background: rgba(67,97,238,0.08); }
-}
-.category-group-header:active { background: rgba(67,97,238,0.12); }
-
+.category-group-header:hover { background: rgba(67,97,238,0.08); }
 .category-name {
     display: flex;
     align-items: center;
@@ -175,8 +159,7 @@
     transition: max-height 0.3s ease-out;
 }
 .category-group.expanded .category-items {
-    /* 修复：增加到 500px，防止网盘工具等较多项时被截断 */
-    max-height: 500px; 
+    max-height: 400px;
     overflow-y: auto;
 }
 .category-item {
@@ -194,21 +177,12 @@
     text-align: left;
     border-radius: 0;
     margin: 2px 0;
-    -webkit-tap-highlight-color: transparent;
 }
-
-@media (hover: hover) {
-    .category-item:hover {
-        background: rgba(67,97,238,0.12);
-        color: var(--primary-color, #4361ee);
-        padding-left: 48px;
-    }
-}
-.category-item:active {
-    background: rgba(67,97,238,0.15);
+.category-item:hover {
+    background: rgba(67,97,238,0.12);
     color: var(--primary-color, #4361ee);
+    padding-left: 48px;
 }
-
 .category-item i { width: 18px; font-size: 13px; color: currentColor; }
 
 .sidebar-footer {
@@ -233,22 +207,13 @@
     transition: all 0.2s ease;
     font-size: 20px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-    -webkit-tap-highlight-color: transparent;
 }
 .footer-btn i { font-size: 20px; }
-
-@media (hover: hover) {
-    .footer-btn:hover {
-        background: rgba(67,97,238,0.1);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.12);
-    }
+.footer-btn:hover {
+    background: rgba(67,97,238,0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.12);
 }
-.footer-btn:active {
-    transform: scale(0.92);
-    opacity: 0.8;
-}
-
 .footer-btn[data-action="notebook"] { color: #8b5cf6; }
 .footer-btn[data-action="notebook"]:hover { background: rgba(139,92,246,0.15); color: #7c3aed; }
 .footer-btn[data-action="about"] { color: #ec4899; }
@@ -286,7 +251,7 @@
     .sidebar-wallpaper-signature { font-size: 10px; }
 }
 @media (max-height:500px) and (orientation:landscape) {
-    .sidebar { top: 60px !important; bottom: 10px; max-height: calc(100vh - 70px); }
+    .sidebar { top: 60px !important; bottom: 10px; }
     .sidebar-wallpaper { aspect-ratio: 21/9; }
     .daily-quote-card { display: none; }
 }
@@ -333,13 +298,3 @@
 .dark-mode .footer-btn[data-action="about"]:hover { color: #f9a8d4; }
 .dark-mode .footer-btn[data-action="qq"] { color: #60a5fa; }
 .dark-mode .footer-btn[data-action="qq"]:hover { color: #93c5fd; }
-
-/* =========================================================
-   iPad 专门优化 (新增部分)
-   ========================================================= */
-@media (min-width: 768px) and (max-width: 1180px) {
-    /* 放大侧边栏按钮的触控区域 */
-    .footer-btn {
-        min-height: 44px;
-    }
-}
