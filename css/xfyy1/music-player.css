@@ -1,4 +1,4 @@
-/* music-player.css - 精简版（移除 !important 滥用 + 新增 iPad 尺寸优化） */
+/* music-player.css - 精简版（移除 !important 滥用） */
 
 /* ===== 主容器 ===== */
 .music-player {
@@ -489,19 +489,3 @@
 .dark-mode .volume-slider input[type="range"] { background: var(--border-color); }
 .dark-mode .volume-slider input[type="range"]::-webkit-slider-thumb { background: var(--primary-color); }
 .dark-mode .volume-slider input[type="range"]::-webkit-slider-thumb:hover { background: #5a7aff; }
-
-/* =========================================================
-   iPad 音乐播放器尺寸适配 (新增部分)
-   ========================================================= */
-@media (min-width: 768px) and (max-width: 1024px) {
-    .music-player {
-        width: 380px; /* 稍微缩小，避免在 iPad 竖屏占满 */
-        right: 16px;
-        bottom: 16px;
-        max-height: 80vh; /* 防止横屏时过高溢出 */
-    }
-    
-    .tab-content {
-        max-height: 300px; /* 限制播放列表内容高度，保证整体布局平衡 */
-    }
-}
