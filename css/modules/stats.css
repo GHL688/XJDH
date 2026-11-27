@@ -1,4 +1,4 @@
-/* stats.css - 精简版 */
+/* stats.css - 完整修改版（适配 iPad 触控与尺寸优化） */
 .footer-compact-container {
     width: 100%;
     max-width: 1200px;
@@ -84,10 +84,18 @@
     transition: all .2s ease;
     box-shadow: var(--shadow, 0 2px 4px rgba(0,0,0,.05));
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
-.stat-card:hover {
-    border-color: var(--primary-color, #4361ee);
-    box-shadow: 0 2px 6px rgba(67,97,238,.08);
+
+@media (hover: hover) {
+    .stat-card:hover {
+        border-color: var(--primary-color, #4361ee);
+        box-shadow: 0 2px 6px rgba(67,97,238,.08);
+    }
+}
+.stat-card:active {
+    transform: scale(0.97);
+    background: var(--bg-secondary);
 }
 
 .stat-card-inner {
@@ -168,7 +176,9 @@
     .stat-number { font-size: 12px; }
     .stat-name { font-size: 9px; }
 }
-@media (min-width:1025px) { .footer-compact-container { padding-top: 0; } }
+@media (min-width:1025px) {
+    .footer-compact-container { padding-top: 0; }
+}
 
 .floating-btn { width: 40px; height: 40px; font-size: 14px; }
 
@@ -193,3 +203,27 @@
 .dark-mode .running-icon { border-color: var(--error-color); }
 .dark-mode .stat-name { color: var(--text-secondary); }
 .dark-mode .stat-number { color: var(--text-primary); }
+
+/* =========================================================
+   iPad 专门优化 (新增部分)
+   ========================================================= */
+@media (min-width: 768px) and (max-width: 1180px) {
+    /* 在 iPad 上让统计卡片稍微大一些，并增加内边距 */
+    .stat-card {
+        padding: 12px;
+    }
+    .stat-icon {
+        width: 36px;
+        height: 36px;
+    }
+    .stat-number {
+        font-size: 16px;
+    }
+    .stat-name {
+        font-size: 11px;
+    }
+    .disclaimer-text {
+        font-size: 12px; /* 平板阅读更清晰 */
+        line-height: 1.5;
+    }
+}
