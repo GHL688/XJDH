@@ -47,8 +47,8 @@
    - 在 Workers 设置中绑定 `DB`（D1）和 `STATS_KV`（KV）
    - 设置环境变量：`ADMIN_TOKEN`、`ALLOWED_ORIGINS` 等
 
-5. 将 `admin.html` 作为管理后台访问并开始添加导航内容
-6. 修改 `worker.js` 中的 `CACHE_TTL` 和域名配置以适应你的需求
+4. 进入Workers和Pages→前端绑定自定义域名xxx.xxx，后端绑定自定义域名的子域名aip.xxx.xxx
+5. 修改 `worker.js` 中的 `CACHE_TTL` 和域名配置以适应你的需求
 
 ## 🧩 环境变量
 
