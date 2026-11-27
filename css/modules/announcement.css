@@ -1,4 +1,4 @@
-/* announcement.css - 精简版（公告模态框移动端间距修复） */
+/* announcement.css - 完整修改版（公告模态框移动端间距修复 + iPad优化） */
 .announcement-modal-simple {
     position: fixed;
     top: 60px;
@@ -68,11 +68,15 @@
     justify-content: center;
     cursor: pointer;
     transition: background .2s;
+    -webkit-tap-highlight-color: transparent;
 }
-.announcement-close:hover {
-    background: rgba(0,0,0,.1);
-    color: var(--text-primary, #334155);
+@media (hover: hover) {
+    .announcement-close:hover {
+        background: rgba(0,0,0,.1);
+        color: var(--text-primary, #334155);
+    }
 }
+.announcement-close:active { transform: scale(0.9); }
 
 .announcement-body {
     padding: 16px 20px 12px;
@@ -99,6 +103,7 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
     margin-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
 }
 .updates-section::-webkit-scrollbar { display: none; }
 .updates-title {
@@ -145,11 +150,15 @@
     cursor: pointer;
     transition: background .2s, box-shadow .2s;
     box-shadow: 0 2px 8px rgba(67,97,238,.2);
+    -webkit-tap-highlight-color: transparent;
 }
-.announcement-ack-btn:hover {
-    background: #3651d4;
-    box-shadow: 0 4px 12px rgba(67,97,238,.3);
+@media (hover: hover) {
+    .announcement-ack-btn:hover {
+        background: #3651d4;
+        box-shadow: 0 4px 12px rgba(67,97,238,.3);
+    }
 }
+.announcement-ack-btn:active { transform: scale(0.95); }
 
 /* 移动端：左右间距与主页一致 */
 @media (max-width: 768px) {
@@ -220,3 +229,18 @@
 .dark-mode .announcement-date { color: var(--text-secondary); }
 .dark-mode .announcement-ack-btn { background: var(--primary-color); }
 .dark-mode .announcement-ack-btn:hover { background: #5a7aff; }
+
+/* =========================================================
+   iPad 专门优化 (新增部分)
+   ========================================================= */
+@media (min-width: 768px) and (max-width: 1180px) {
+    .announcement-close {
+        width: 44px;
+        height: 44px;
+        font-size: 1.2rem;
+    }
+    .announcement-ack-btn {
+        padding: 8px 24px;
+        font-size: 1rem;
+    }
+}
