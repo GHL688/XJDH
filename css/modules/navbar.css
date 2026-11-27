@@ -1,4 +1,4 @@
-/* navbar.css - 精简版 */
+/* navbar.css - 完整修改版（适配 iPad 触控与尺寸） */
 .navbar {
     position: fixed;
     top: 0;
@@ -55,7 +55,15 @@
     box-sizing: border-box;
 }
 .navbar .nav-brand .logo i { color: var(--text-primary) !important; font-size: 18px; }
-.nav-brand:hover .logo { transform: scale(1.05); border-color: var(--border-color); }
+
+/* 仅在支持 hover 的设备上应用放大效果 */
+@media (hover: hover) {
+    .nav-brand:hover .logo { 
+        transform: scale(1.05); 
+        border-color: var(--border-color); 
+    }
+}
+
 .logo img { width:100%; height:100%; object-fit:contain; display:block; border-radius:6px; }
 
 .brand-text-container {
@@ -97,8 +105,24 @@
     transition: var(--transition);
     color: var(--text-primary);
     position: relative;
+    -webkit-tap-highlight-color: transparent;
 }
-.nav-btn:hover { background: var(--primary-color); color: #fff; transform: translateY(-2px); }
+
+/* 桌面端 hover 效果 */
+@media (hover: hover) {
+    .nav-btn:hover { 
+        background: var(--primary-color); 
+        color: #fff; 
+        transform: translateY(-2px); 
+    }
+}
+
+/* 触屏点击反馈 */
+.nav-btn:active {
+    transform: scale(0.95);
+    opacity: 0.8;
+}
+
 .nav-btn.active { background: rgba(74,144,226,.2); color: var(--primary-color); transform: scale(1.05); }
 .nav-btn.active:hover { background: rgba(74,144,226,.3); }
 
@@ -145,14 +169,11 @@
 #announcementBtn.active { background: #3764F4 !important; color: #fff !important; transition: none; }
 #announcementBtn.active i { color: #fff !important; }
 
-/* 暗色模式 */
-@media (prefers-color-scheme:dark) {
-    .navbar .nav-brand .logo { background: #fff !important; border-color: var(--border-color); }
-    .navbar .nav-brand .logo i { color: var(--text-primary) !important; }
-    .nav-brand:hover .logo { border-color: var(--border-color); }
-    .brand-text { color: var(--text-primary); }
-    .brand-subtitle { color: var(--text-secondary); }
-}
+/* 暗色模式 (移除 prefers-color-scheme 乱用的代码，统一用 .dark-mode) */
+.dark-mode .navbar .nav-brand .logo { background: #fff !important; border-color: var(--border-color); }
+.dark-mode .navbar .nav-brand .logo i { color: var(--text-primary) !important; }
+.dark-mode .brand-text { color: var(--text-primary); }
+.dark-mode .brand-subtitle { color: var(--text-secondary); }
 
 /* 响应式 */
 @media (min-width:768px) and (max-width:991px) {
@@ -189,4 +210,19 @@
     .brand-text { font-size:18px; }
     .brand-subtitle { font-size:13px; }
     .brand-text-container { gap:5px; }
+}
+
+/* =========================================================
+   iPad 专门优化 (新增部分)
+   ========================================================= */
+@media (min-width: 768px) and (max-width: 1180px) {
+    /* iPad 上放大导航按钮，符合 Apple HIG 44px 触控标准 */
+    .nav-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 18px;
+    }
+    .nav-actions {
+        gap: 12px;
+    }
 }
