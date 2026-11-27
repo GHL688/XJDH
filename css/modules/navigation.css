@@ -1,4 +1,4 @@
-/* navigation.css 完整修改版（卡片正方形 图标左移 淡紫下移 分割线上移 数字放大 + iPad优化） */
+/* navigation.css 卡片正方形 图标左移 淡紫下移 分割线上移 数字放大 */
 
 .nav-search-box { display: block; width: 100%; margin-top: 10px; }
 .search-input-wrapper { position: relative; display: flex; align-items: center; width: 100%; }
@@ -96,21 +96,12 @@
     overflow: hidden;
     box-sizing: border-box;
     min-height: 0;
-    -webkit-tap-highlight-color: transparent;
 }
-
-@media (hover: hover) {
-    .site-card:hover {
-        transform: translateY(-2px);
-        border-color: var(--primary-color);
-        box-shadow: 0 6px 16px rgba(67, 97, 238, 0.12);
-        background: linear-gradient(135deg, var(--card-hover-bg-start), var(--card-hover-bg-end));
-    }
-}
-
-.site-card:active {
-    transform: scale(0.96);
-    opacity: 0.9;
+.site-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary-color);
+    box-shadow: 0 6px 16px rgba(67, 97, 238, 0.12);
+    background: linear-gradient(135deg, var(--card-hover-bg-start), var(--card-hover-bg-end));
 }
 
 .card-top {
@@ -304,22 +295,3 @@
 .dark-mode .card-top .site-title { color: var(--text-primary); }
 .dark-mode .load-more-trigger.is-end { color: var(--text-secondary); }
 .dark-mode .load-more-trigger.is-end::before, .dark-mode .load-more-trigger.is-end::after { background: linear-gradient(to right, transparent, var(--border-color), transparent); }
-
-/* =========================================================
-   iPad 专门优化 (新增部分)
-   ========================================================= */
-@media (min-width: 768px) and (max-width: 1180px) {
-    /* 在 iPad 上稍微增大卡片网格密度，避免横向撑得过宽 */
-    .level3-content {
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-        gap: 12px;
-        padding: 16px;
-    }
-    
-    /* 触控目标稍微放大 */
-    .level1-btn, .level2-btn {
-        min-height: 44px;
-        height: 44px;
-        line-height: 44px;
-    }
-}
