@@ -1,4 +1,4 @@
-/* greeting.css - 完整修改版（统一使用 padding-bottom: 10px） */
+/* greeting.css - 完整修改版（统一使用 padding-bottom: 10px + iPad优化） */
 .greeting-section { padding: 0 0 10px 0; position: relative; }
 
 .greeting-container {
@@ -165,10 +165,14 @@
     white-space: nowrap;
     flex-shrink: 0;
     line-height: 1.5;
+    -webkit-tap-highlight-color: transparent;
 }
 .expand-holiday-btn:hover {
     background: rgba(67,97,238,.1);
     border-color: var(--primary-color);
+}
+.expand-holiday-btn:active {
+    background: rgba(67,97,238,.2);
 }
 
 #currentTime {
@@ -212,12 +216,20 @@
     overflow: visible;
     user-select: none;
     box-shadow: 0 2px 4px rgba(0,0,0,.05);
+    -webkit-tap-highlight-color: transparent;
 }
-.fish-btn:active { transform: scale(.95); }
-.fish-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,.1);
+.fish-btn:active { transform: scale(.92); }
+@media (hover: hover) {
+    .fish-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,.1);
+    }
+    .fish-btn:hover i {
+        transform: scale(1.05) translateY(-1px);
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,.2));
+    }
 }
+
 .fish-btn[data-type="merit"] {
     background: var(--bg-card);
     color: #70c1ff;
@@ -242,10 +254,6 @@
     font-size: 16px;
     transition: transform .2s ease;
     filter: drop-shadow(0 1px 2px rgba(0,0,0,.1));
-}
-.fish-btn:hover i {
-    transform: scale(1.05) translateY(-1px);
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,.2));
 }
 .fish-count {
     font-size: .9em;
@@ -410,3 +418,17 @@
 }
 .dark-mode .secondary-holiday-item { background: rgba(123,156,255,.15); }
 .dark-mode .secondary-name { color: var(--text-primary); }
+
+/* =========================================================
+   iPad 专门优化 (新增部分)
+   ========================================================= */
+@media (min-width: 768px) and (max-width: 1180px) {
+    /* 在 iPad 上木鱼按钮是主要交互点，确保符合 44px 触控标准 */
+    .fish-btn {
+        min-height: 48px;
+        padding: 8px 12px;
+    }
+    .fish-btn i {
+        font-size: 18px;
+    }
+}
