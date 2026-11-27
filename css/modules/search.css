@@ -1,5 +1,4 @@
-/* search.css - 精简版（搜索模态框位于导航栏下方，移动端间距与主页一致）
-   本次仅调整 .engine-dropdown 的定位，使其固定在引擎触发按钮正下方 */
+/* search.css - 完整修改版（搜索模态框位于导航栏下方，移动端间距与主页一致 + iPad优化） */
 
 /* ===== 搜索模态框外壳 ===== */
 .search-modal {
@@ -17,7 +16,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    padding: 60px 20px 20px;           /* 顶部与导航栏底部对齐 */
+    padding: 60px 20px 20px;
     box-sizing: border-box;
 }
 .search-modal.active {
@@ -64,11 +63,13 @@
     justify-content: center;
     transition: .2s;
     flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
 }
 .engine-trigger-btn:hover {
     border-color: var(--primary-color, #4361ee);
     color: var(--primary-color, #4361ee);
 }
+.engine-trigger-btn:active { transform: scale(0.95); }
 .engine-trigger-btn i { font-size: 1rem; }
 
 .search-input {
@@ -99,18 +100,16 @@
     transition: background .2s;
     white-space: nowrap;
     height: 40px;
+    -webkit-tap-highlight-color: transparent;
 }
 .search-submit-btn:hover { background: var(--secondary-color, #3a0ca3); }
+.search-submit-btn:active { transform: scale(0.96); }
 
-/* ===== 引擎下拉：定位到触发按钮正下方 =====
-   原理：.modal-content 带 transform，成为绝对定位后代的包含块，
-        其 padding box 即为定位基准。按钮位于 (20px, 16px)，
-        尺寸 40×40，故 bottom = 56px；下拉 top = 62px（多 6px 间距）。
-        仅修改 top / left 两处，其他属性完全不变。 */
+/* ===== 引擎下拉 ===== */
 .engine-dropdown {
     position: absolute;
-    top: 62px;                 /* 16（padding-top）+ 40（按钮高度）+ 6（间距） */
-    left: 20px;                /* 与按钮左边缘对齐 */
+    top: 62px;
+    left: 20px;
     width: 180px;
     background: var(--bg-card, #ffffff);
     border: 1px solid var(--border-color, #e0e0e0);
@@ -144,7 +143,11 @@
     transition: background .15s;
     border-radius: 6px;
 }
-.engine-dropdown-item:hover { background: var(--bg-secondary, #f8f9fa); }
+@media (hover: hover) {
+    .engine-dropdown-item:hover { background: var(--bg-secondary, #f8f9fa); }
+}
+.engine-dropdown-item:active { background: var(--bg-secondary, #f8f9fa); }
+
 .engine-dropdown-item.active {
     background: rgba(67,97,238,.08);
     color: var(--primary-color, #4361ee);
@@ -184,7 +187,10 @@
     transition: background .15s;
 }
 .suggestion-item:last-child { border-bottom: none; }
-.suggestion-item:hover { background: var(--bg-secondary, #f8f9fa); }
+@media (hover: hover) {
+    .suggestion-item:hover { background: var(--bg-secondary, #f8f9fa); }
+}
+.suggestion-item:active { background: var(--bg-secondary, #f8f9fa); }
 
 /* ===== 历史记录 ===== */
 .history-panel {
@@ -211,8 +217,11 @@
     color: var(--primary-color, #4361ee);
     font-size: .8rem;
     transition: opacity .2s;
+    -webkit-tap-highlight-color: transparent;
 }
 .clear-history-btn:hover { opacity: .8; }
+.clear-history-btn:active { opacity: 0.6; }
+
 .history-item {
     display: flex;
     justify-content: space-between;
@@ -224,7 +233,11 @@
     color: var(--text-primary, #2b2d42);
     transition: background .1s;
 }
-.history-item:hover { background: rgba(0,0,0,.04); }
+@media (hover: hover) {
+    .history-item:hover { background: rgba(0,0,0,.04); }
+}
+.history-item:active { background: rgba(0,0,0,.06); }
+
 .history-text { flex: 1; overflow: hidden; text-overflow: ellipsis; }
 .delete-history {
     color: var(--text-secondary, #6c757d);
@@ -236,6 +249,10 @@
     color: var(--error-color, #ef4444);
     background: rgba(239,68,68,.1);
 }
+.delete-history:active {
+    color: var(--error-color, #ef4444);
+    background: rgba(239,68,68,.2);
+}
 .history-empty {
     text-align: center;
     color: var(--text-secondary, #6c757d);
@@ -244,7 +261,7 @@
     margin: 0;
 }
 
-/* ===== 移动端适配：左右间距与主页一致；同步调整下拉定位以匹配按钮位置 ===== */
+/* ===== 移动端适配 ===== */
 @media (max-width: 768px) {
     .search-modal {
         padding: 60px var(--container-padding-xs, 16px) var(--container-padding-xs, 16px);
@@ -259,8 +276,8 @@
     .engine-trigger-btn { width: 36px; height: 36px; }
     .engine-dropdown {
         width: 160px;
-        top: 56px;             /* 14（padding-top）+ 36（按钮高度）+ 6（间距） */
-        left: 16px;            /* 与按钮左边缘对齐 */
+        top: 56px;
+        left: 16px;
     }
 }
 
@@ -322,3 +339,27 @@
     background: rgba(239,68,68,.2);
 }
 .dark-mode .history-empty { color: var(--text-secondary); }
+
+/* =========================================================
+   iPad 专门优化 (新增部分)
+   ========================================================= */
+@media (min-width: 768px) and (max-width: 1180px) {
+    /* 确保搜索框在 iPad 上放大，防止 iOS 自动缩放页面 */
+    .search-input {
+        height: 44px;
+        font-size: 16px; /* iOS 关键：≥16px 才不会触发聚焦缩放 */
+    }
+    .engine-trigger-btn {
+        width: 44px;
+        height: 44px;
+    }
+    .search-submit-btn {
+        height: 44px;
+        font-size: 16px;
+    }
+    
+    /* 下拉框适配变大的输入框 */
+    .engine-dropdown {
+        top: 66px; 
+    }
+}
