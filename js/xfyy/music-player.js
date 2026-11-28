@@ -211,9 +211,7 @@ class MusicPlayer {
 
         this.userGestureResolved = false;
         this.userGesturePromise = null;
-        // ===== 新增：用户手势超时定时器 =====
         this._userGestureTimeout = null;
-        // ===== 修复：保存缓存清理定时器 ID，便于 cleanup 时清除 =====
         this._cacheCleanupInterval = null;
 
         if (!window.Starlink) window.Starlink = {};
@@ -223,13 +221,11 @@ class MusicPlayer {
         window.musicPlayer = window.Starlink.musicPlayer;
     }
 
-    // ===== 修复：waitForUserGesture 处理顺序 + 超时/手势触发后清空 Promise =====
     waitForUserGesture() {
         if (this.userGestureResolved) return Promise.resolve();
         if (this.userGesturePromise) return this.userGesturePromise;
 
         this.userGesturePromise = new Promise((resolve) => {
-            // 先声明 handler（避免 TDZ 边界歧义）
             const handler = () => {
                 this.userGestureResolved = true;
                 if (this._userGestureTimeout) {
@@ -239,12 +235,10 @@ class MusicPlayer {
                 document.removeEventListener('click', handler);
                 document.removeEventListener('touchstart', handler);
                 document.removeEventListener('keydown', handler);
-                // 手势触发后清空 Promise，避免后续调用返回已 resolve 的旧引用
                 this.userGesturePromise = null;
                 resolve();
             };
 
-            // 10 秒超时自动 resolve
             this._userGestureTimeout = setTimeout(() => {
                 this.userGestureResolved = true;
                 this._userGestureTimeout = null;
@@ -289,7 +283,6 @@ class MusicPlayer {
         this.lastTimeUpdate = 0;
         this.scrollAnimationId = null;
 
-        // ===== 新增：跟踪 CustomSelect 实例，便于清理 =====
         this._customSelectInstances = new Map();
 
         this.restorePlaylistState();
@@ -396,7 +389,6 @@ class MusicPlayer {
         }
     }
 
-    // ---------- 存储辅助 ----------
     saveVolume(v) { Storage.setItem('musicPlayer.volume', v); }
     loadVolume() { return Storage.getItem('musicPlayer.volume', 0.5); }
     savePlaybackSpeed(s) { Storage.setItem('musicPlayer.playbackSpeed', s); }
@@ -406,7 +398,6 @@ class MusicPlayer {
     savePlayState(s) { Storage.setItem('musicPlayer.playState', s); }
     loadPlayState() { return Storage.getItem('musicPlayer.playState', false); }
 
-    // ---------- 事件绑定 ----------
     bindEvents() {
         const el = this.elements;
         el['play-btn'].addEventListener('click', () => this.togglePlay());
@@ -491,7 +482,6 @@ class MusicPlayer {
         this.loadApiPlaylist(api);
     }
 
-    // ---------- 歌词 ----------
     async loadLyrics(song) {
         this.lyricsData = [];
         this.currentLyricIndex = -1;
@@ -577,7 +567,6 @@ class MusicPlayer {
         if (this.elements['lyrics-container']) this.elements['lyrics-container'].scrollLeft = 0;
     }
 
-    // ---------- 播放控制 ----------
     togglePlay() {
         if (!this.userGestureResolved) {
             this.waitForUserGesture().then(() => this.togglePlay());
@@ -716,7 +705,6 @@ class MusicPlayer {
         }
     }
 
-    // ---------- 加载歌单 ----------
     async loadApiPlaylist(apiId) {
         const el = this.apiElements[apiId];
         if (!el) return;
@@ -812,7 +800,6 @@ class MusicPlayer {
         }
     }
 
-    // ---------- 渲染 ----------
     generatePlaylistSkeleton() {
         return Array(8).fill('').map(() => `
             <div class="skeleton-song-item">
@@ -921,7 +908,6 @@ class MusicPlayer {
         }
     }
 
-    // ---------- 加载歌曲 ----------
     async loadSong(index, playlist = null) {
         const pl = playlist || this.currentPlaylist;
         if (index < 0 || index >= pl.length) return;
@@ -995,7 +981,6 @@ class MusicPlayer {
         }
     }
 
-    // ---------- 下载 ----------
     async downloadCurrentSong() {
         if (!this.currentPlaylist[this.currentIndex]) {
             window.toast?.show('没有可下载的歌曲', 'warning');
@@ -1098,7 +1083,6 @@ class MusicPlayer {
         }
     }
 
-    // ---------- 进度控制 ----------
     handleEnded() {
         if (this.playMode === 2) {
             this.audio.currentTime = 0;
@@ -1111,7 +1095,9 @@ class MusicPlayer {
     }
 
     updateProgress() {
+        // ===== 修复：防止重复添加 requestAnimationFrame 导致多个循环并行 =====
         if (this.isDraggingProgress || this.updateAnimationFrame) return;
+        
         this.updateAnimationFrame = requestAnimationFrame(() => {
             const currentTime = this.audio.currentTime;
             const duration = this.audio.duration;
@@ -1259,7 +1245,6 @@ class MusicPlayer {
         this.audio.addEventListener('play', () => { if (!this.updateAnimationFrame) this.updateProgress(); });
     }
 
-    // ---------- 初始化 ----------
     initializePlayer() {
         this.audio.src = '';
         this.audio.load();
@@ -1284,7 +1269,6 @@ class MusicPlayer {
             }
         }, 500);
 
-        // ===== 修复：保存定时器 ID，便于 cleanup 时清除 =====
         this._cacheCleanupInterval = setInterval(() => this.cacheManager.cleanup(), 30 * 60 * 1000);
         this.hasInitialized = true;
         this.restorePlaybackProgress();
@@ -1298,13 +1282,11 @@ class MusicPlayer {
         }
     }
 
-    // ---------- 清理 ----------
     resetUIState() {
         this.isSearchMode.forEach((val, api) => { if (val) this.toggleSearchMode(api); });
         if (this.isVolumeSliderVisible) this.hideVolumeSlider();
     }
 
-    // ===== 修复：cleanup 中清除缓存清理定时器 =====
     cleanup() {
         if (this.updateAnimationFrame) cancelAnimationFrame(this.updateAnimationFrame);
         if (this.dragRAF) cancelAnimationFrame(this.dragRAF);
@@ -1316,13 +1298,11 @@ class MusicPlayer {
             clearTimeout(this._userGestureTimeout);
             this._userGestureTimeout = null;
         }
-        // ===== 新增：清除缓存清理定时器 =====
         if (this._cacheCleanupInterval) {
             clearInterval(this._cacheCleanupInterval);
             this._cacheCleanupInterval = null;
         }
 
-        // ===== 销毁所有 CustomSelect 实例 =====
         if (customSelectInstances) {
             customSelectInstances.forEach((instance) => {
                 try { instance.destroy(); } catch(e) {}
