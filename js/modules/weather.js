@@ -1,4 +1,4 @@
-/* weather.js - 完整版（增加错误上报，修复天气模态框头部图标颜色，修复 GPS 重试状态残留） */
+/* weather.js - 完整版 */
 class WeatherModule {
     static CONFIG = {
         get API_BASE() {
@@ -666,7 +666,6 @@ class WeatherModule {
             if (e.target === this.modalElement) this.hide();
         });
 
-        // ===== 修复：每次绑定前先解绑旧的 ESC 监听，防止内存泄漏 =====
         if (this.escHandler) {
             document.removeEventListener('keydown', this.escHandler);
         }
@@ -678,6 +677,9 @@ class WeatherModule {
 
     showCityPrompt() {
         try {
+            // ===== 修复：防止重复弹出城市选择框 =====
+            if (document.querySelector('.city-prompt-modal')) return;
+
             const esc = this._escapeHtml.bind(this);
             const modal = document.createElement('div');
             modal.className = 'city-prompt-modal';
@@ -910,7 +912,6 @@ class WeatherModule {
         if (window.Starlink?.sidebar && window.Starlink.sidebar.isVisible) window.Starlink.sidebar.hide();
         else if (window.sidebar && window.sidebar.isVisible) window.sidebar.hide();
 
-        // ===== 修复：从 isModalOpen 改为正确的 isOpen =====
         if (window.Starlink?.search && window.Starlink.search.isOpen) window.Starlink.search.hide();
         else if (window.searchModule && window.searchModule.isOpen) window.searchModule.hide();
 
