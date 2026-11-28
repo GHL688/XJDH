@@ -11,6 +11,10 @@ class ThemeModule {
         this.isInitialized = false;
         this.systemThemeQuery = null;
         this.systemThemeHandler = null;
+        
+        // ===== 修复：保存点击事件的引用，防止移除失败 =====
+        this._boundToggleTheme = this.toggleTheme.bind(this);
+        this._boundSystemThemeHandler = null;
 
         if (window.Starlink) window.Starlink.theme = this;
         window.themeModule = this;
@@ -92,27 +96,27 @@ class ThemeModule {
     }
 
     bindEvents() {
-        this.themeToggleBtn.addEventListener('click', () => this.toggleTheme());
+        this.themeToggleBtn.addEventListener('click', this._boundToggleTheme);
         if (window.matchMedia) {
             this.systemThemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
-            this.systemThemeHandler = (e) => {
+            
+            this._boundSystemThemeHandler = (e) => {
                 if (this.currentTheme === 'auto') {
                     this.applyTheme();
                 }
             };
-            this.systemThemeQuery.addEventListener('change', this.systemThemeHandler);
+            this.systemThemeQuery.addEventListener('change', this._boundSystemThemeHandler);
         }
     }
 
-    // ===== 修复：完善 destroy 方法，移除系统主题监听 =====
     destroy() {
-        if (this.systemThemeQuery && this.systemThemeHandler) {
-            this.systemThemeQuery.removeEventListener('change', this.systemThemeHandler);
+        if (this.systemThemeQuery && this._boundSystemThemeHandler) {
+            this.systemThemeQuery.removeEventListener('change', this._boundSystemThemeHandler);
             this.systemThemeQuery = null;
-            this.systemThemeHandler = null;
+            this._boundSystemThemeHandler = null;
         }
         if (this.themeToggleBtn) {
-            this.themeToggleBtn.removeEventListener('click', this.toggleTheme);
+            this.themeToggleBtn.removeEventListener('click', this._boundToggleTheme);
         }
         this.isInitialized = false;
     }
