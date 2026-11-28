@@ -41,6 +41,10 @@ class AboutModule {
             wechat: './assets/images/wx.png',
             alipay: './assets/images/zfb.png'
         };
+        
+        // ===== 修复：保存 bound 函数，防止内存泄漏 =====
+        this._boundKeydown = this.handleKeydown.bind(this);
+        
         this.injectGithubButtonStyle();
         
         if (window.Starlink) window.Starlink.about = this;
@@ -168,7 +172,8 @@ class AboutModule {
         this.modalElement.addEventListener('click', (e) => {
             if (e.target === this.modalElement) this.hide();
         });
-        document.addEventListener('keydown', this.handleKeydown.bind(this));
+        // ===== 修复：使用保存的引用，防止内存泄漏 =====
+        document.addEventListener('keydown', this._boundKeydown);
         this.bindButtonEvents();
         this.preloadImages();
     }
@@ -194,7 +199,6 @@ class AboutModule {
         const qqBtn = document.getElementById('aboutQQBtn');
         if (qqBtn) {
             qqBtn.addEventListener('click', () => {
-                // ===== 安全修复：移除 yunzhiapi 明文 token，改用 QQ 官方临时会话链接 =====
                 window.open('https://wpa.qq.com/msgrd?v=3&uin=1595126534&site=qq&menu=yes', '_blank');
             });
         }
@@ -692,7 +696,8 @@ class AboutModule {
 
     destroy() {
         this.hide();
-        document.removeEventListener('keydown', this.handleKeydown.bind(this));
+        // ===== 修复：移除保存的 bound 引用 =====
+        document.removeEventListener('keydown', this._boundKeydown);
         if (this.modalElement && this.modalElement.parentNode) this.modalElement.parentNode.removeChild(this.modalElement);
         this.modalElement = null;
         this.isShowing = false;
