@@ -176,7 +176,6 @@ class WeatherModule {
                 window.errorHandler.report(error, 'weather.tryGpsLocation');
             }
             console.error('GPS 定位失败:', error.message);
-            // ===== 修复：GPS 失败后重置尝试标记，允许后续自动重试 =====
             this.gpsAttempted = false;
             this.useAutoLocation = false;
             const toast = window.Starlink?.toast || window.toast;
@@ -667,11 +666,14 @@ class WeatherModule {
             if (e.target === this.modalElement) this.hide();
         });
 
-        const escHandler = (e) => {
+        // ===== 修复：每次绑定前先解绑旧的 ESC 监听，防止内存泄漏 =====
+        if (this.escHandler) {
+            document.removeEventListener('keydown', this.escHandler);
+        }
+        this.escHandler = (e) => {
             if (e.key === 'Escape' && this.isShowing) this.hide();
         };
-        document.addEventListener('keydown', escHandler);
-        this.escHandler = escHandler;
+        document.addEventListener('keydown', this.escHandler);
     }
 
     showCityPrompt() {
@@ -715,7 +717,6 @@ class WeatherModule {
 
             document.body.appendChild(modal);
 
-            // ===== 修复：用 requestAnimationFrame 触发过渡动画 =====
             requestAnimationFrame(() => {
                 modal.classList.add('active');
                 modal.style.opacity = '1';
@@ -812,7 +813,6 @@ class WeatherModule {
         setTimeout(() => modal.remove(), 300);
     }
 
-    // ===== 修复：gpsAttempted 重置移入 finally，确保任何情况都能重试 =====
     async handleGpsRefresh() {
         this.gpsAttempted = false;
         try {
@@ -834,7 +834,6 @@ class WeatherModule {
             if (toast && toast.show) toast.show('定位失败，请手动选择城市', 'error');
             else if (window.app && window.app.showToast) window.app.showToast('定位失败，请手动选择城市', 'error');
         } finally {
-            // ===== 修复：无论成败都重置尝试标记，保证下次能重新定位 =====
             this.gpsAttempted = false;
             const locationBtn = this.modalElement?.querySelector('#weatherLocationBtn');
             if (locationBtn) { locationBtn.innerHTML = '<i class="fas fa-location-crosshairs"></i>'; locationBtn.disabled = false; }
@@ -911,8 +910,9 @@ class WeatherModule {
         if (window.Starlink?.sidebar && window.Starlink.sidebar.isVisible) window.Starlink.sidebar.hide();
         else if (window.sidebar && window.sidebar.isVisible) window.sidebar.hide();
 
-        if (window.Starlink?.search && window.Starlink.search.isModalOpen) window.Starlink.search.hide();
-        else if (window.searchModule && window.searchModule.isModalOpen) window.searchModule.hide();
+        // ===== 修复：从 isModalOpen 改为正确的 isOpen =====
+        if (window.Starlink?.search && window.Starlink.search.isOpen) window.Starlink.search.hide();
+        else if (window.searchModule && window.searchModule.isOpen) window.searchModule.hide();
 
         if (window.Starlink?.navbar?.hideMusicPlayer) window.Starlink.navbar.hideMusicPlayer();
         else if (window.app?.components?.navbar?.hideMusicPlayer) window.app.components.navbar.hideMusicPlayer();
