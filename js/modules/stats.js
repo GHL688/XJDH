@@ -26,7 +26,6 @@ function updateUptimeDisplay(startTimeMs) {
     if (!startTimeMs) return;
     const uptimeMs = Date.now() - startTimeMs;
     const formatted = formatUptime(uptimeMs);
-    // 使用 querySelectorAll 更新所有 uptime 元素
     const uptimeEls = document.querySelectorAll('#uptime');
     uptimeEls.forEach(el => {
         if (el) el.textContent = formatted;
@@ -65,10 +64,12 @@ async function postToWorker(endpoint, extraData = {}) {
 // ===== 增强：发送离线信号（含停留时长） =====
 function sendOfflineSignal() {
     const visitorId = getVisitorSession();
-    const duration = Math.floor((Date.now() - pageEnterTime) / 1000); // 秒
+    const duration = Math.floor((Date.now() - pageEnterTime) / 1000);
     const data = { visitorId, duration };
     if (navigator.sendBeacon) {
-        navigator.sendBeacon(`${WORKER_URL}/offline`, JSON.stringify(data));
+        // 修复：使用 Blob 发送，防止后端解析失败
+        const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+        navigator.sendBeacon(`${WORKER_URL}/offline`, blob);
     } else {
         fetch(`${WORKER_URL}/offline`, {
             method: 'POST',
@@ -84,7 +85,7 @@ async function refreshStats() {
         const res = await fetch(`${WORKER_URL}/stats`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        // 使用 querySelectorAll 更新所有统计卡片
+        
         const onlineEls = document.querySelectorAll('#onlineCount');
         onlineEls.forEach(el => { if (el) el.textContent = data.online; });
         
@@ -96,7 +97,8 @@ async function refreshStats() {
         
         const siteCountEls = document.querySelectorAll('#siteCount');
         if (siteCountEls.length && data.total_sites !== undefined) {
-            siteCountEls.forEach(el => { if (el) el.textContent = data.total_sites; });
+            // ===== 修复：加上 '+' 防止与 navigation.js 冲突闪烁 =====
+            siteCountEls.forEach(el => { if (el) el.textContent = data.total_sites + '+'; });
         }
     } catch (e) {}
 }
@@ -105,14 +107,12 @@ let heartbeatInterval = null;
 
 function handleVisibilityChange() {
     if (document.hidden) {
-        // 页面隐藏（切换标签或最小化）时，发送离线信号
         sendOfflineSignal();
         if (heartbeatInterval) {
             clearInterval(heartbeatInterval);
             heartbeatInterval = null;
         }
     } else {
-        // 页面重新可见时，重置进入时间并重新开始心跳
         pageEnterTime = Date.now();
         if (!heartbeatInterval) {
             postToWorker('/heartbeat');
@@ -128,13 +128,11 @@ document.addEventListener('DOMContentLoaded', function() {
     heartbeatInterval = setInterval(() => postToWorker('/heartbeat'), 30000);
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    // ===== 增加 pagehide 事件（页面关闭时发送离线信号） =====
     window.addEventListener('pagehide', function() {
         sendOfflineSignal();
         if (heartbeatInterval) clearInterval(heartbeatInterval);
     });
 
-    // 兼容 beforeunload（备用）
     window.addEventListener('beforeunload', function() {
         sendOfflineSignal();
         if (heartbeatInterval) clearInterval(heartbeatInterval);
