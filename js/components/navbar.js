@@ -3,6 +3,10 @@ class Navbar {
     constructor() {
         if (window.Starlink && window.Starlink.navbar) return window.Starlink.navbar;
         this.announcements = [];
+        
+        // ===== 修复：保存 bound 函数引用，防止 removeEventListener 失效 =====
+        this._boundHandleScroll = this.handleScroll.bind(this);
+        
         this.init();
         if (window.Starlink) window.Starlink.navbar = this;
         window.navbar = this;
@@ -49,19 +53,8 @@ class Navbar {
             });
         }
 
-        const annBtn = document.getElementById('announcementBtn');
-        if (annBtn) {
-            annBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const announcementModule = window.Starlink?.announcement;
-                if (announcementModule && typeof announcementModule.toggleModal === 'function') {
-                    this.handleFeatureToggle('announcement', () => announcementModule.toggleModal());
-                } else if (window.announcementModule && typeof window.announcementModule.toggleModal === 'function') {
-                    this.handleFeatureToggle('announcement', () => window.announcementModule.toggleModal());
-                }
-            });
-        }
+        // ===== 修复：移除 announcementBtn 的绑定，交由 announcement.js 独立管理，防止冲突 =====
+        // 之前两边都绑定会导致点一次触发两次，现在让 announcement.js 全权负责。
 
         const weatherBtn = document.getElementById('weatherBtn');
         if (weatherBtn) {
@@ -107,7 +100,8 @@ class Navbar {
             if (e.key === 'Escape') this.closeAllModalsExcept([]);
         });
 
-        window.addEventListener('scroll', this.handleScroll.bind(this));
+        // ===== 修复：使用保存的引用，防止泄漏 =====
+        window.addEventListener('scroll', this._boundHandleScroll);
 
         const btt = document.getElementById('backToTop');
         if (btt) btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
@@ -260,7 +254,8 @@ class Navbar {
     }
 
     destroy() {
-        window.removeEventListener('scroll', this.handleScroll);
+        // ===== 修复：移除保存的引用 =====
+        window.removeEventListener('scroll', this._boundHandleScroll);
     }
 }
 
