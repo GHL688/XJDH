@@ -6,23 +6,23 @@
     .tag-label { font-size: 14px; }
     .navigation-left { width: 160px; }
     .navigation-middle { width: 180px; }
-    /* 原 160px -> 改为 110px，列数增加 2 列 */
-    .level3-content { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+    /* 1600px 屏幕下，排 9 列 */
+    .level3-content { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; }
 }
 
 @media (min-width: 1200px) and (max-width: 1599px) {
     .tags-grid { grid-template-columns: repeat(8, 1fr); gap: 12px; }
     .minimal-tag { padding: 12px 16px; min-height: 50px; }
-    /* 原 140px -> 改为 110px，列数增加 2 列 */
-    .level3-content { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+    /* 1200px 屏幕下，排 9 列，必须严格 <= 90px */
+    .level3-content { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); }
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {
     .tags-grid { grid-template-columns: repeat(7, 1fr); gap: 10px; }
     .minimal-tag { padding: 10px 14px; min-height: 46px; }
     .navigation-left, .navigation-middle { width: 130px; }
-    /* 原 130px -> 改为 110px */
-    .level3-content { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+    /* 992px 屏幕下，排 9 列，设 85px 保证塞得下 */
+    .level3-content { grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); }
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
@@ -49,8 +49,8 @@
         border-right: 1px solid var(--border-color); 
         border-bottom: none;
     }
-    /* 原 130px -> 改为 110px，列数增加 1 列 */
-    .level3-content { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+    /* 平板端 100% 宽度，排 7 列设 90px 保证在 768px 也能塞下 */
+    .level3-content { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; }
     .tags-grid { grid-template-columns: repeat(6, 1fr); gap: 10px; }
     .minimal-tag { padding: 8px 12px; min-height: 42px; }
     .tag-label { font-size: 12px; }
@@ -78,7 +78,7 @@
         flex: 0 0 auto; padding: 0 14px; border-right: 1px solid var(--border-color);
         border-bottom: none; font-size: 12px;
     }
-    .level3-content { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
+    .level3-content { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
     .tags-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
     .minimal-tag { padding: 8px 12px; min-height: 40px; }
     .tag-label { font-size: 11px; }
@@ -111,7 +111,7 @@
         flex: 0 0 auto; padding: 0 12px; border-right: 1px solid var(--border-color);
         border-bottom: none; font-size: 11px; height: 36px; min-height: 36px;
     }
-    .level3-content { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 6px; padding: 8px; }
+    .level3-content { grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); gap: 6px; padding: 8px; }
     .tags-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .minimal-tag { padding: 6px 10px; min-height: 36px; }
     .tag-label { font-size: 10px; }
