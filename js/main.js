@@ -12,7 +12,6 @@ class App {
         this._navPollingTimer = null;
         this._isDestroyed = false;
 
-        // ===== 新增：防重复加载错误遮罩 =====
         this._errorOverlayShown = false;
 
         if (document.readyState === 'loading') {
@@ -28,7 +27,6 @@ class App {
     }
 
     showErrorFallback(message = '页面加载失败，请刷新重试') {
-        // ===== 修复：防重复添加 =====
         if (this._errorOverlayShown) return;
         if (document.getElementById('error-fallback-overlay')) return;
 
@@ -249,7 +247,6 @@ class App {
             }
         });
 
-        // ===== 新增：页面卸载时清理定时器 =====
         window.addEventListener('beforeunload', () => {
             if (this._navPollingTimer) {
                 clearInterval(this._navPollingTimer);
@@ -278,7 +275,6 @@ class App {
         }
     }
 
-    // ===== 修复：合作伙伴模块初始化增加最大重试次数 =====
     initPartnerModule() {
         if (!window.Starlink) window.Starlink = {};
         if (!window.Starlink.partner) {
@@ -344,16 +340,11 @@ class App {
 
     initCoreComponents() {
         try {
-            if (typeof CompactSidebar !== 'undefined') {
-                if (!window.sidebar || !window.sidebar.isInitialized) {
-                    this.components.sidebar = new CompactSidebar();
-                    this.components.sidebar.init().catch(error => {
-                        console.error('侧边栏初始化失败:', error);
-                        this.showToast('侧边栏初始化失败，部分功能可能不可用', 'warning');
-                    });
-                } else {
-                    this.components.sidebar = window.sidebar;
-                }
+            // ===== 修复：侧边栏已在 sidebar.js 内部自行初始化，直接读取实例即可 =====
+            if (window.Starlink && window.Starlink.sidebar) {
+                this.components.sidebar = window.Starlink.sidebar;
+            } else if (window.sidebar) {
+                this.components.sidebar = window.sidebar;
             }
         } catch (error) {
             console.error('核心组件初始化失败:', error);
@@ -697,33 +688,28 @@ class App {
         this.showToast('应用状态已重置', 'success');
     }
 
-    // ===== 修复：完善 destroy 方法 =====
     destroy() {
         if (this._isDestroyed) return;
         this._isDestroyed = true;
 
         this.closeAllModals();
 
-        // 清理错误处理
         if (this._cleanupErrorHandler) {
             this._cleanupErrorHandler();
             this._cleanupErrorHandler = null;
         }
 
-        // 清理导航轮询定时器
         if (this._navPollingTimer) {
             clearInterval(this._navPollingTimer);
             this._navPollingTimer = null;
         }
 
-        // 清理组件
         Object.entries(this.components).forEach(([name, component]) => {
             if (component && typeof component.destroy === 'function') {
                 try { component.destroy(); } catch (error) { console.error(`销毁组件 ${name} 失败:`, error); }
             }
         });
 
-        // 清理模块
         Object.entries(this.modules).forEach(([name, module]) => {
             if (module && typeof module.destroy === 'function') {
                 try { module.destroy(); } catch (error) { console.error(`销毁模块 ${name} 失败:`, error); }
