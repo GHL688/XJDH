@@ -340,7 +340,6 @@ class App {
 
     initCoreComponents() {
         try {
-            // ===== 修复：侧边栏已在 sidebar.js 内部自行初始化，直接读取实例即可 =====
             if (window.Starlink && window.Starlink.sidebar) {
                 this.components.sidebar = window.Starlink.sidebar;
             } else if (window.sidebar) {
@@ -467,10 +466,7 @@ class App {
                 e.preventDefault();
                 this.showSearch();
             }
-            if (e.key === 'F5' || ((e.ctrlKey || e.metaKey) && e.key === 'r')) {
-                e.preventDefault();
-                this.refreshPageWithAnimation();
-            }
+            // 已移除 F5 / Ctrl+R 的刷新拦截
         });
         window.addEventListener('online', () => this.showToast('网络已连接', 'success'));
         window.addEventListener('offline', () => {
