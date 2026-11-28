@@ -466,7 +466,6 @@ class App {
                 e.preventDefault();
                 this.showSearch();
             }
-            // 已移除 F5 / Ctrl+R 的刷新拦截
         });
         window.addEventListener('online', () => this.showToast('网络已连接', 'success'));
         window.addEventListener('offline', () => {
@@ -511,10 +510,14 @@ class App {
         if (!this.activeModals.includes(modal)) {
             if (this.activeModals.length > 0) {
                 const previous = this.activeModals[this.activeModals.length - 1];
-                previous.hide();
+                if (previous !== modal && typeof previous.hide === 'function') {
+                    previous.hide();
+                }
             }
             this.activeModals.push(modal);
-            if (this.components.sidebar && this.components.sidebar.isVisible && this.components.sidebar.isVisible()) {
+            
+            // ===== 修复：增加 modal !== 侧边栏判断，防止侧边栏首次打开时被自己关掉 =====
+            if (this.components.sidebar && this.components.sidebar !== modal && this.components.sidebar.isVisible && this.components.sidebar.isVisible()) {
                 this.components.sidebar.hide();
             }
         }
