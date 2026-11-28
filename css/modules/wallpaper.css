@@ -103,8 +103,21 @@
     box-shadow: 0 0 4px rgba(0,0,0,.3);
 }
 
-/* 响应式 */
-@media (max-width:768px) {
+/* ===== 新增：平板端专属高度优化 ===== */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .wallpaper-container {
+        height: 35vh; /* 高度提升 */
+        min-height: 220px; /* 强制撑开最小高度 */
+        border-radius: 12px !important;
+    }
+    .carousel-arrow { width: 42px; height: 42px; font-size: 1.4rem; }
+    .wallpaper-info { bottom: 14px; left: 20px; right: 20px; }
+    .wallpaper-title { font-size: 16px; max-width: calc(100% - 100px); }
+    .carousel-dot { width: 10px; height: 10px; }
+}
+
+/* ===== 手机端适配 ===== */
+@media (max-width: 768px) {
     .wallpaper-section { padding: 0 0 10px 0; }
     .wallpaper-container {
         height: 26vh;
@@ -115,7 +128,8 @@
     .wallpaper-info { bottom: 8px; left: 12px; right: 12px; }
     .wallpaper-title { font-size: 13px; max-width: calc(100% - 60px); }
 }
-@media (max-width:480px) {
+
+@media (max-width: 480px) {
     .wallpaper-section { padding: 0 0 10px 0; }
     .wallpaper-container {
         height: 26vh;
