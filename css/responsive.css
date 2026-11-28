@@ -4,22 +4,22 @@
     .tags-grid { grid-template-columns: repeat(10, 1fr); gap: 12px; }
     .minimal-tag { padding: 12px 16px; min-height: 52px; }
     .tag-label { font-size: 14px; }
-    .navigation-left { width: 180px; }
-    .navigation-middle { width: 200px; }
-    .level3-content { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+    .navigation-left { width: 160px; }
+    .navigation-middle { width: 180px; }
+    .level3-content { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
 }
 
 @media (min-width: 1200px) and (max-width: 1599px) {
     .tags-grid { grid-template-columns: repeat(8, 1fr); gap: 12px; }
     .minimal-tag { padding: 12px 16px; min-height: 50px; }
-    .level3-content { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+    /* 保持原有列宽 */
+    .level3-content { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {
     .tags-grid { grid-template-columns: repeat(7, 1fr); gap: 10px; }
     .minimal-tag { padding: 10px 14px; min-height: 46px; }
-    .navigation-left, .navigation-middle { width: 140px; }
-    .level3-content { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+    .navigation-left, .navigation-middle { width: 130px; }
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
@@ -27,13 +27,14 @@
     .navigation-left, .navigation-middle {
         width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); overflow: hidden;
     }
+    /* 强制单行横向滑动，与手机端一致 */
     .level1-nav, .level2-nav {
         flex-direction: row; 
         flex-wrap: nowrap;
         overflow-x: auto; 
         overflow-y: hidden;
         white-space: nowrap; 
-        padding: 6px 10px; 
+        padding: 4px 8px; 
         display: flex;
         width: 100%;
         -webkit-overflow-scrolling: touch;
@@ -46,8 +47,8 @@
         border-right: 1px solid var(--border-color); 
         border-bottom: none;
     }
-    /* 平板端稍微放大卡片最小宽度 */
-    .level3-content { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+    /* 保持原有列宽 130px */
+    .level3-content { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
     .tags-grid { grid-template-columns: repeat(6, 1fr); gap: 10px; }
     .minimal-tag { padding: 8px 12px; min-height: 42px; }
     .tag-label { font-size: 12px; }
@@ -75,7 +76,7 @@
         flex: 0 0 auto; padding: 0 14px; border-right: 1px solid var(--border-color);
         border-bottom: none; font-size: 12px;
     }
-    .level3-content { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+    .level3-content { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
     .tags-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
     .minimal-tag { padding: 8px 12px; min-height: 40px; }
     .tag-label { font-size: 11px; }
@@ -108,7 +109,7 @@
         flex: 0 0 auto; padding: 0 12px; border-right: 1px solid var(--border-color);
         border-bottom: none; font-size: 11px; height: 36px; min-height: 36px;
     }
-    .level3-content { grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 8px; padding: 10px; }
+    .level3-content { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 6px; padding: 8px; }
     .tags-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .minimal-tag { padding: 6px 10px; min-height: 36px; }
     .tag-label { font-size: 10px; }
@@ -200,7 +201,7 @@
     .tags-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
     .minimal-tag { padding: 5px 8px; }
     .tag-label { font-size: 9px; }
-    .level3-content { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); }
+    .level3-content { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
     .site-title { font-size: 10px; }
     .site-description { display: none; }
     .greeting-text h1 { font-size: 1rem; }
