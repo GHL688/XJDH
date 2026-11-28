@@ -51,9 +51,8 @@
             this.categories = JSON.parse(JSON.stringify(CATEGORIES_DATA));
             this.userConfig = null;
             this._savedScrollY = 0;
-            this._profileModal = null; // 复用模态框
-            this._wallpaperCache = null; // 壁纸缓存
-            // ===== 新增：保存个人资料模态框的 ESC 监听器引用 =====
+            this._profileModal = null;
+            this._wallpaperCache = null;
             this._profileEscHandler = null;
             this.init();
             if (window.Starlink) window.Starlink.sidebar = this;
@@ -325,12 +324,10 @@
             }
         }
 
-        // 壁纸加载增加缓存
         async loadWallpaperBackground() {
             const wallpaperDiv = document.getElementById('sidebarWallpaper');
             if (!wallpaperDiv) return;
 
-            // 检查缓存
             const cacheKey = 'sidebar_wallpaper_cache';
             const cached = localStorage.getItem(cacheKey);
             if (cached) {
@@ -353,7 +350,6 @@
                         wallpaperDiv.style.backgroundImage = `url(${data.url})`;
                         wallpaperDiv.style.backgroundSize = 'cover';
                         wallpaperDiv.style.backgroundPosition = 'center';
-                        // 缓存
                         localStorage.setItem(cacheKey, JSON.stringify({
                             url: data.url,
                             timestamp: Date.now()
@@ -365,14 +361,11 @@
             }
         }
 
-        // ===== 修复：openProfileModal 复用单例模态框 + ESC 监听器统一管理 =====
         openProfileModal() {
-            // 如果已有模态框，先移除
             if (this._profileModal && this._profileModal.parentNode) {
                 this._profileModal.remove();
                 this._profileModal = null;
             }
-            // ===== 修复：同时清理可能残留的 ESC 监听器 =====
             if (this._profileEscHandler) {
                 document.removeEventListener('keydown', this._profileEscHandler);
                 this._profileEscHandler = null;
@@ -447,14 +440,12 @@
             document.body.appendChild(modal);
             this._profileModal = modal;
 
-            // 点击背景关闭
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     this._closeProfileModal();
                 }
             });
 
-            // 绑定事件
             const qqInput = document.getElementById('profileQQ');
             const statusDiv = document.getElementById('qqAvatarStatus');
             const saveBtn = document.getElementById('profileSaveBtn');
@@ -500,7 +491,6 @@
                 const newName = document.getElementById('profileNickname')?.value.trim() || '访客用户';
                 const newSig = document.getElementById('profileSignature')?.value.trim() || '探索无限可能';
                 const newQQ = document.getElementById('profileQQ')?.value.trim() || '';
-                // ===== 修复：userConfig 兜底，防止 null 时抛错 =====
                 const userConfig = Storage.get('userConfig') || {};
                 userConfig.nickname = newName;
                 userConfig.signature = newSig;
@@ -516,7 +506,6 @@
                 this._closeProfileModal();
             });
 
-            // ===== 修复：ESC 监听器保存到实例属性，便于统一移除 =====
             this._profileEscHandler = (e) => {
                 if (e.key === 'Escape') {
                     this._closeProfileModal();
@@ -525,7 +514,6 @@
             document.addEventListener('keydown', this._profileEscHandler);
         }
 
-        // ===== 修复：统一清理模态框 + ESC 监听器 =====
         _closeProfileModal() {
             if (this._profileEscHandler) {
                 document.removeEventListener('keydown', this._profileEscHandler);
@@ -605,9 +593,9 @@
             this.closeOtherModals();
             this.isOpen = true;
             this.sidebarEl.classList.add('active');
-            if (window.Starlink?.app && !window._sidebarModalRegistered) {
+            // ===== 修复：移除全局标记，直接注册，main.js 内已修复误杀逻辑 =====
+            if (window.Starlink?.app) {
                 window.Starlink.app.registerModal(this);
-                window._sidebarModalRegistered = true;
             }
         }
 
