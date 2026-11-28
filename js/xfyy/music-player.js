@@ -311,7 +311,10 @@ class MusicPlayer {
             }
             this.currentPlaylist = state.playlist;
             this.currentIndex = state.index || 0;
-            this.currentApi = (['migu','kg','kuwo'].includes(state.api)) ? 'netease' : (state.api || 'netease');
+            
+            // 仅允许支持的 API 恢复
+            const validApis = ['netease', 'qq', 'local'];
+            this.currentApi = validApis.includes(state.api) ? state.api : 'netease';
             if (this.currentIndex >= this.currentPlaylist.length) this.currentIndex = 0;
         } catch (e) {}
     }
@@ -1095,7 +1098,6 @@ class MusicPlayer {
     }
 
     updateProgress() {
-        // ===== 修复：防止重复添加 requestAnimationFrame 导致多个循环并行 =====
         if (this.isDraggingProgress || this.updateAnimationFrame) return;
         
         this.updateAnimationFrame = requestAnimationFrame(() => {
