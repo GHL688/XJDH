@@ -6,20 +6,23 @@
     .tag-label { font-size: 14px; }
     .navigation-left { width: 160px; }
     .navigation-middle { width: 180px; }
-    .level3-content { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+    /* 原 160px -> 改为 110px，列数增加 2 列 */
+    .level3-content { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
 }
 
 @media (min-width: 1200px) and (max-width: 1599px) {
     .tags-grid { grid-template-columns: repeat(8, 1fr); gap: 12px; }
     .minimal-tag { padding: 12px 16px; min-height: 50px; }
-    /* 保持原有列宽 */
-    .level3-content { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    /* 原 140px -> 改为 110px，列数增加 2 列 */
+    .level3-content { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {
     .tags-grid { grid-template-columns: repeat(7, 1fr); gap: 10px; }
     .minimal-tag { padding: 10px 14px; min-height: 46px; }
     .navigation-left, .navigation-middle { width: 130px; }
+    /* 原 130px -> 改为 110px */
+    .level3-content { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
@@ -27,7 +30,6 @@
     .navigation-left, .navigation-middle {
         width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); overflow: hidden;
     }
-    /* 强制单行横向滑动，与手机端一致 */
     .level1-nav, .level2-nav {
         flex-direction: row; 
         flex-wrap: nowrap;
@@ -47,8 +49,8 @@
         border-right: 1px solid var(--border-color); 
         border-bottom: none;
     }
-    /* 保持原有列宽 130px */
-    .level3-content { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+    /* 原 130px -> 改为 110px，列数增加 1 列 */
+    .level3-content { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
     .tags-grid { grid-template-columns: repeat(6, 1fr); gap: 10px; }
     .minimal-tag { padding: 8px 12px; min-height: 42px; }
     .tag-label { font-size: 12px; }
