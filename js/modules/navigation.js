@@ -1,7 +1,4 @@
-/* navigation.js - 异步分页加载 + 图标缓存持久化 + 预加载 + 自动重试 + 批量图标 + 搜索防抖节流
- * 描述外层 text-wrap 包裹 让 site-text 高度自适应 scrollHeight 准确
- */
-
+/* navigation.js - 异步分页加载 + 图标缓存持久化 + 预加载 + 自动重试 + 批量图标 + 搜索防抖节流 */
 class OptimizedNavigation {
     constructor() {
         if (window.Starlink && window.Starlink.navigation) return window.Starlink.navigation;
@@ -86,7 +83,6 @@ class OptimizedNavigation {
         try { return new URL(url).hostname; } catch { return ''; }
     }
 
-    // ===== 描述 3 行截断（二分查找 + 省略号）=====
     _truncateDescription(el, maxLines = 3) {
         if (!el) return;
 
@@ -105,7 +101,6 @@ class OptimizedNavigation {
         if (isNaN(lineHeight) || lineHeight <= 0) {
             lineHeight = (fontSize || 11) * 1.4;
         }
-        // 3 行文字高度 + 上下 padding = 最大可容纳高度
         const maxTotalHeight = lineHeight * maxLines + paddingTop + paddingBottom;
 
         if (el.scrollHeight <= maxTotalHeight + 1) return;
@@ -137,7 +132,6 @@ class OptimizedNavigation {
         items.forEach(el => this._truncateDescription(el, 3));
     }
 
-    // ===== 创建图标元素 =====
     _createIconElement(site) {
         const container = document.createElement('span');
         container.className = 'icon-container';
@@ -210,7 +204,6 @@ class OptimizedNavigation {
         return container;
     }
 
-    // ===== 渲染站点卡片（首次） =====
     _renderSites(sites) {
         const container = this.level3Content;
         if (!container) return;
@@ -235,7 +228,6 @@ class OptimizedNavigation {
         this.updateLoadMoreTrigger();
     }
 
-    // ===== 创建单张站点卡片 =====
     _createSiteCard(site) {
         const card = document.createElement('a');
         card.className = 'site-card';
@@ -249,7 +241,6 @@ class OptimizedNavigation {
         const formattedViews = this._formatViews(views);
         const desc = site.description || '暂无描述';
 
-        // 描述外层包裹 text-wrap，让 site-text 高度自适应
         card.innerHTML = `
             <div class="card-top"></div>
             <div class="text-wrap">
@@ -353,7 +344,6 @@ class OptimizedNavigation {
         return card;
     }
 
-    // ===== 追加站点卡片（加载更多） =====
     _appendSites(sites) {
         const container = this.level3Content;
         if (!container) return;
@@ -716,12 +706,7 @@ class OptimizedNavigation {
             input.focus();
         });
 
-        document.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                e.preventDefault();
-                input?.focus();
-            }
-        });
+        // ===== 修复：移除了与全局 main.js 冲突的 Ctrl+K 快捷键 =====
     }
 
     async performSearch(query) {
