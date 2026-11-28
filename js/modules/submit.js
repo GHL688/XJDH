@@ -24,6 +24,7 @@ class SubmitModule {
 
         this.isVisible = false;
         this.hasFetchedInfo = false;
+        this._isFetchingInfo = false; // ===== 新增：防重复请求标志 =====
 
         this.DRAFT_KEY = 'submit_draft';
         this.CONTACT_KEY = 'submit_contact';
@@ -91,8 +92,11 @@ class SubmitModule {
             this.isRestoringDraft = false;
 
             this.hasFetchedInfo = false;
-            if (draft.url && this.isVisible && !this.hasFetchedInfo) {
-                setTimeout(() => this.fetchSiteInfo(), 500);
+            // ===== 修复：防抖处理，防止 MutationObserver 和 show() 同时触发请求 =====
+            if (draft.url && this.isVisible && !this.hasFetchedInfo && !this._isFetchingInfo) {
+                setTimeout(() => {
+                    if (!this._isFetchingInfo) this.fetchSiteInfo();
+                }, 500);
             }
             this.updateSubmitButton();
             return true;
@@ -134,6 +138,7 @@ class SubmitModule {
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.attributeName === 'class' && this.modal.classList.contains('active')) {
+                    if (this.isVisible) return; // 如果已经处理过可见状态，跳过
                     this.isVisible = true;
                     this.ensureStatsBadge();
                     this.loadGlobalTotalCount();
@@ -271,6 +276,10 @@ class SubmitModule {
             return;
         }
 
+        // ===== 修复：如果正在请求中，直接返回 =====
+        if (this._isFetchingInfo) return;
+
+        this._isFetchingInfo = true;
         this.hasFetchedInfo = false;
         this.fetchInfoBtn.disabled = true;
         this.fetchInfoBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 获取信息...';
@@ -282,7 +291,6 @@ class SubmitModule {
 
         try {
             const safeUrl = url.startsWith('http') ? url : `https://${url}`;
-            // 使用 GET 接口获取信息，不触发安全检测
             const response = await Utils.safeFetch(`${this.apiBase}/fetch-site-info?url=${encodeURIComponent(safeUrl)}`, { timeout: 10000 });
             const data = await response.json();
 
@@ -298,7 +306,6 @@ class SubmitModule {
                 this.autoResizeDesc();
             }
 
-            // 检查是否已收录
             if (data.alreadySubmitted) {
                 if (this.urlCheckResult) {
                     this.urlCheckResult.className = 'url-check-result unsafe';
@@ -326,6 +333,7 @@ class SubmitModule {
             this.hasFetchedInfo = false;
             this.updateSubmitButton();
         } finally {
+            this._isFetchingInfo = false;
             this.fetchInfoBtn.disabled = false;
             this.fetchInfoBtn.innerHTML = '<i class="fas fa-magic"></i> 获取信息';
         }
@@ -337,7 +345,6 @@ class SubmitModule {
         const contact = this.contactInput ? this.contactInput.value.trim() : '';
         const urlValid = Utils.isValidUrl(url);
         const contactValid = contact && contact.includes('@');
-        // 不需要安全检测，只需标题、网址有效且联系邮箱有效即可启用提交按钮
         const enable = !!(title && urlValid && contactValid);
         this.submitSaveBtn.disabled = !enable || this.submitting;
     }
@@ -436,10 +443,8 @@ class SubmitModule {
         } else if (window.sidebar && window.sidebar.isVisible?.()) {
             window.sidebar.hide();
         }
+        // 由于 MutationObserver 也会触发，这里直接加 active 即可
         this.modal.classList.add('active');
-        this.isVisible = true;
-        this.loadDraft();
-        this.updateSubmitButton();
         if (window.Starlink?.app) window.Starlink.app.registerModal(this);
         else if (window.app) window.app.registerModal(this);
     }
