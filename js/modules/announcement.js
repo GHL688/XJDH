@@ -1,4 +1,3 @@
-
 class AnnouncementModule {
     constructor() {
         if (window.Starlink && window.Starlink.announcement) return window.Starlink.announcement;
@@ -6,9 +5,16 @@ class AnnouncementModule {
         this.isVisible = false;
         this.currentAnnouncement = null;
         this.escapeHandler = null;
-        // ===== 新增：按钮绑定标志，防止反复 cloneNode 替换节点 =====
         this._btnBound = false;
         this.apiBase = Utils.getApiBase();
+        
+        // ===== 修复：保存 bound 函数 =====
+        this._boundToggle = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.toggleModal();
+        };
+
         this.loadAnnouncement();
         this.setupGlobalEvents();
         if (window.Starlink) window.Starlink.announcement = this;
@@ -175,9 +181,8 @@ class AnnouncementModule {
         });
     }
 
-    // ===== 修复：ESC handler 只绑一次 + 按钮只克隆/绑定一次 =====
     setupGlobalEvents() {
-        // ESC handler：仅首次绑定，避免累积多个监听器
+        // ESC handler：仅首次绑定
         if (!this.escapeHandler) {
             this.escapeHandler = (e) => {
                 if (e.key === 'Escape' && this.isVisible) {
@@ -187,20 +192,11 @@ class AnnouncementModule {
             document.addEventListener('keydown', this.escapeHandler);
         }
 
-        // 按钮事件：仅首次克隆/绑定，避免反复替换节点
+        // ===== 修复：移除 cloneNode，直接绑定原按钮，避免破坏其它模块的事件 =====
         if (this._btnBound) return;
-
         const announcementBtn = document.getElementById('announcementBtn');
         if (announcementBtn) {
-            // 通过替换节点清除 navbar.js 可能已绑定的监听器，
-            // 避免一次点击触发两次 toggleModal（打开后又立即关闭）
-            const newBtn = announcementBtn.cloneNode(true);
-            announcementBtn.parentNode.replaceChild(newBtn, announcementBtn);
-            newBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.toggleModal();
-            });
+            announcementBtn.addEventListener('click', this._boundToggle);
             this._btnBound = true;
         }
     }
@@ -243,13 +239,13 @@ class AnnouncementModule {
 
     closeOtherModals() {
         if (window.Starlink?.sidebar?.isVisible?.()) window.Starlink.sidebar.hide();
-        if (window.Starlink?.search?.isModalOpen?.()) window.Starlink.search.hide();
+        if (window.Starlink?.search?.isOpen) window.Starlink.search.hide();
         const musicPlayer = document.getElementById('musicPlayer');
         if (musicPlayer?.classList.contains('show')) {
             if (window.Starlink?.navbar?.hideMusicPlayer) window.Starlink.navbar.hideMusicPlayer();
         }
         if (window.Starlink?.weather?.isShowing) window.Starlink.weather.hide();
-        if (window.Starlink?.about?.isVisible) window.Starlink.about.hide();
+        if (window.Starlink?.about?.isShowing) window.Starlink.about.hide();
         if (window.Starlink?.app?.hideNotebookModal) window.Starlink.app.hideNotebookModal();
         const submitModal = document.getElementById('submitModal');
         if (submitModal?.classList.contains('active')) submitModal.classList.remove('active');
@@ -265,7 +261,6 @@ class AnnouncementModule {
         if (this.isVisible) this.showModal();
     }
 
-    // ===== 修复：destroy 完整清理 + 复位 _btnBound =====
     destroy() {
         this.hide();
 
@@ -274,12 +269,16 @@ class AnnouncementModule {
             this.escapeHandler = null;
         }
 
+        // ===== 修复：解绑按钮事件 =====
+        const announcementBtn = document.getElementById('announcementBtn');
+        if (announcementBtn && this._boundToggle) {
+            announcementBtn.removeEventListener('click', this._boundToggle);
+        }
+
         if (this.modalElement?.parentNode) {
             this.modalElement.parentNode.removeChild(this.modalElement);
         }
         this.modalElement = null;
-
-        // ===== 复位按钮绑定标志，允许重新初始化 =====
         this._btnBound = false;
         this.isVisible = false;
     }
